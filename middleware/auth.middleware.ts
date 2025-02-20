@@ -20,8 +20,7 @@ const authorize = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const decodedToken = jwt.verify(token, JWT_SECRET!);
-    console.log(decodedToken);
-    const user = await User.findById(decodedToken.id!);
+    const user = await User.findById((decodedToken as jwt.JwtPayload).id);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -30,10 +29,7 @@ const authorize = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
-    req.user = user;
     next();
-
-    // next();
   } catch (error) {
     console.log(error);
     res.status(401).json({

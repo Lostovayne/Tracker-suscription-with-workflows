@@ -8,6 +8,7 @@ import errorMiddleware from "./middleware/error.middleware";
 import authRoutes from "./routes/auth.routes";
 import subscriptionRoutes from "./routes/subscription.routes";
 import userRoutes from "./routes/user.routes";
+import arcjetMiddleware from "./middleware/arcjet.middleware";
 
 const app = express();
 const BASE_API_PATH = "/api/v1";
@@ -15,6 +16,7 @@ const BASE_API_PATH = "/api/v1";
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(arcjetMiddleware);
 
 app.use(`${BASE_API_PATH}/subscriptions`, subscriptionRoutes);
 app.use(`${BASE_API_PATH}/users`, userRoutes);
