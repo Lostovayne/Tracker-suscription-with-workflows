@@ -1,146 +1,201 @@
-# Subscription Tracker 🚀
+# 🚀 Subscription Tracker
 
-## 📋 Project Overview
+## 📋 Table of Contents
 
-Subscription Tracker is a robust web application designed to help users manage and track their subscriptions efficiently. Built with modern web technologies, this application provides a seamless experience for monitoring and organizing subscription-related information.
+1. [Project Overview](#project-overview)
+2. [Features](#features)
+3. [Tech Stack](#tech-stack)
+4. [Prerequisites](#prerequisites)
+5. [Installation Guide](#installation-guide)
+6. [Environment Setup](#environment-setup)
+7. [Running the Application](#running-the-application)
+8. [API Documentation](#api-documentation)
+9. [Authentication Flow](#authentication-flow)
+10. [Project Structure](#project-structure)
+11. [Contributing](#contributing)
+12. [Troubleshooting](#troubleshooting)
 
-## 🌟 Features
+## 📌 Project Overview
 
-- User Authentication (Sign Up, Sign In, Sign Out)
-- Create, Read, Update, and Delete (CRUD) Subscription Management
-- Secure MongoDB Database Integration
-- JWT-based Authentication
-- TypeScript Support
-- Express.js Backend
+Subscription Tracker is a modern web application designed to help users efficiently manage and monitor their subscriptions. Built with TypeScript and Express.js, it provides a secure and scalable solution for subscription management with features like user authentication and CRUD operations.
+
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 🔐 Authentication | Complete user authentication system (Sign Up, Sign In, Sign Out) |
+| 📝 CRUD Operations | Full subscription management capabilities |
+| 🔒 Security | JWT-based authentication with secure password hashing |
+| 📊 Database | Robust MongoDB integration with Mongoose ODM |
+| 🛠 TypeScript | Full TypeScript support for better development experience |
 
 ## 🛠 Tech Stack
 
-- **Backend**: 
-  - Node.js
-  - Express.js
-  - TypeScript
-- **Database**: 
-  - MongoDB
-  - Mongoose ODM
-- **Authentication**:
-  - JSON Web Tokens (JWT)
-  - Bcrypt for password hashing
-- **Environment Management**:
-  - dotenv
+### Backend Framework
+```mermaid
+graph LR
+    A[Node.js] --> B[Express.js]
+    B --> C[TypeScript]
+```
+
+### Database & ORM
+```mermaid
+graph LR
+    A[MongoDB] --> B[Mongoose ODM]
+```
+
+### Security & Authentication
+- 🔑 JSON Web Tokens (JWT)
+- 🔒 Bcrypt Password Hashing
+- 🛡 Cookie-based Authentication
 
 ## 📦 Prerequisites
 
-Before you begin, ensure you have the following installed:
+Before starting, ensure you have the following installed:
 
-- Node.js (v18+ recommended)
-- Bun (recommended package manager)
-- MongoDB (local or cloud instance)
+| Requirement | Version | Description |
+|-------------|---------|-------------|
+| Node.js | v18+ | JavaScript runtime |
+| Bun | Latest | Modern JavaScript runtime & package manager |
+| MongoDB | Latest | Database server |
 
-## 🚀 Installation
+## 🚀 Installation Guide
 
-### 1. Clone the Repository
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-username/tracker-suscription.git
+   cd tracker-suscription
+   ```
 
-```bash
-git clone https://github.com/your-username/tracker-suscription.git
-cd tracker-suscription
-```
+2. **Install Dependencies**
+   ```bash
+   bun install
+   ```
 
-### 2. Install Dependencies
+## ⚙️ Environment Setup
 
-```bash
-bun install
-```
+1. Create a `.env.development.local` file in the project root:
 
-### 3. Environment Configuration
+   ```env
+   # Server Configuration
+   PORT=5500
+   NODE_ENV=development
 
-Create `.env.development.local` in the project root:
+   # Database Configuration
+   DB_URI=mongodb://your-mongodb-connection-string
 
-```env
-# Server Configuration
-PORT=5500
-NODE_ENV=development
+   # JWT Authentication
+   JWT_SECRET="your-secret-key"
+   JWT_EXPIRES_IN=1d
+   ```
 
-# Database Configuration
-DB_URI=mongodb://your-mongodb-connection-string
+2. **Environment Variables Description**
 
-# JWT Authentication
-JWT_SECRET="your-secret-key"
-JWT_EXPIRES_IN=1d
-```
+   | Variable | Description | Example |
+   |----------|-------------|----------|
+   | PORT | Server port number | 5500 |
+   | NODE_ENV | Environment mode | development |
+   | DB_URI | MongoDB connection string | mongodb://localhost:27017/subscription-tracker |
+   | JWT_SECRET | Secret key for JWT | your-secret-key |
+   | JWT_EXPIRES_IN | JWT expiration time | 1d |
 
-### 4. Database Setup
-
-Ensure MongoDB is running and the connection string is correctly configured in your `.env` file.
-
-## 🔧 Running the Application
+## 🎯 Running the Application
 
 ### Development Mode
-
 ```bash
 bun dev
 ```
 
 ### Production Build
-
 ```bash
 bun run build
 bun start
 ```
 
-## 📡 API Endpoints
+## 📡 API Documentation
 
-### Authentication Routes
+### Authentication Endpoints
 
-- `POST /api/v1/auth/sign-up`: Register a new user
-- `POST /api/v1/auth/sign-in`: User login
-- `GET /api/v1/auth/sign-out`: User logout
+| Method | Endpoint | Description | Authentication Required |
+|--------|----------|-------------|----------------------|
+| POST | `/api/v1/auth/sign-up` | Register new user | No |
+| POST | `/api/v1/auth/sign-in` | User login | No |
+| GET | `/api/v1/auth/sign-out` | User logout | Yes |
 
-### Subscription Routes
+### Subscription Endpoints
 
-- `GET /api/v1/subscriptions`: Fetch all subscriptions
-- `GET /api/v1/subscriptions/:id`: Fetch a specific subscription
-- `POST /api/v1/subscriptions`: Create a new subscription
-- `PUT /api/v1/subscriptions/:id`: Update a subscription
-- `DELETE /api/v1/subscriptions/:id`: Delete a subscription
+| Method | Endpoint | Description | Authentication Required |
+|--------|----------|-------------|----------------------|
+| GET | `/api/v1/subscriptions` | Get all subscriptions | Yes |
+| GET | `/api/v1/subscriptions/:id` | Get specific subscription | Yes |
+| POST | `/api/v1/subscriptions` | Create subscription | Yes |
+| PUT | `/api/v1/subscriptions/:id` | Update subscription | Yes |
+| DELETE | `/api/v1/subscriptions/:id` | Delete subscription | Yes |
 
 ## 🔒 Authentication Flow
 
-1. User registers with email and password
-2. Server hashes password and stores user in MongoDB
-3. JWT token generated upon successful login
-4. Token used for authenticating subsequent requests
+```mermaid
+sequenceDiagram
+    participant User
+    participant Server
+    participant Database
 
-## 🧪 Testing
+    User->>Server: Register with email/password
+    Server->>Database: Hash password & store user
+    Database-->>Server: Confirm storage
+    Server-->>User: Success response
 
-(TODO: Add testing instructions and commands)
+    User->>Server: Login with credentials
+    Server->>Database: Verify credentials
+    Database-->>Server: User found
+    Server-->>User: JWT token
+```
+
+## 📁 Project Structure
+
+```
+project-root/
+├── config/
+│   ├── arcjet.ts
+│   └── env.ts
+├── controllers/
+│   ├── auth.controller.ts
+│   └── user.controller.ts
+├── database/
+│   └── mongodb.ts
+├── middleware/
+│   ├── arcjet.middleware.ts
+│   ├── auth.middleware.ts
+│   └── error.middleware.ts
+├── models/
+│   ├── subscription.model.ts
+│   └── user.model.ts
+└── routes/
+    ├── auth.routes.ts
+    ├── subscription.routes.ts
+    └── user.routes.ts
+```
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
-## 📜 License
+## 🔧 Troubleshooting
 
-Distributed under the MIT License. See `LICENSE` for more information.
+| Issue | Solution |
+|-------|----------|
+| MongoDB Connection Failed | Check if MongoDB is running and connection string is correct |
+| JWT Token Invalid | Ensure JWT_SECRET is properly set in .env file |
+| Port Already in Use | Change PORT in .env file or kill the process using the port |
 
-## 🎉 Acknowledgments
+## 📞 Support
 
-- Express.js
-- Mongoose
-- TypeScript
-- JSON Web Tokens
+For support, please open an issue in the GitHub repository or contact the maintainers.
 
-## 🚨 Troubleshooting
+---
 
-- Ensure all environment variables are correctly set
-- Check MongoDB connection string
-- Verify Node.js and Bun versions
-
-## 📞 Contact
-
-Your Name - your.email@example.com
-
-Project Link: [https://github.com/your-username/tracker-suscription](https://github.com/your-username/tracker-suscription)
+📝 **License**: MIT
