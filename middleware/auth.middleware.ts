@@ -3,7 +3,15 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/env";
 import User from "../models/user.model";
 
-const authorize = async (req: Request, res: Response, next: NextFunction) => {
+declare global {
+  namespace Express {
+    interface Request {
+      user: any;
+    }
+  }
+}
+
+const authorize = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   let token;
 
   try {
@@ -12,31 +20,30 @@ const authorize = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (!token) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Unauthorized",
         data: null,
       });
+      return;
     }
 
     const decodedToken = jwt.verify(token, JWT_SECRET!);
     const user = await User.findById((decodedToken as jwt.JwtPayload).id);
     if (!user) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Unauthorized",
         data: null,
       });
     }
 
+    req.user = user;
+
     next();
   } catch (error) {
     console.log(error);
-    res.status(401).json({
-      success: false,
-      message: "Unauthorized",
-      data: null,
-    });
+    next(error);
   }
 };
 

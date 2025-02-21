@@ -13,7 +13,7 @@ interface ISubscription extends Document {
   user: mongoose.Types.ObjectId;
 }
 
-const subscriptionSchema = new mongoose.Schema<ISubscription>(
+const SubscriptionSchema = new mongoose.Schema<ISubscription>(
   {
     name: {
       type: String,
@@ -81,7 +81,7 @@ const subscriptionSchema = new mongoose.Schema<ISubscription>(
 );
 
 // Auto-calulate renewal date if missing
-subscriptionSchema.pre("save", function (next) {
+SubscriptionSchema.pre("save", function (next) {
   if (!this.renewalDate) {
     const renewalPeriods = {
       daily: 1,
@@ -99,4 +99,4 @@ subscriptionSchema.pre("save", function (next) {
 
 // Auto-update the status if renewal date has passed
 
-export default mongoose.model<ISubscription>("Subscription", subscriptionSchema);
+export default mongoose.model<ISubscription>("Subscription", SubscriptionSchema);
