@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createSuscription } from "../controllers/suscription.controller";
+import { createSuscription, getUserSubscriptions } from "../controllers/suscription.controller";
 import authorize from "../middleware/auth.middleware";
 
 const subscriptionRoutes = Router();
@@ -9,7 +9,7 @@ subscriptionRoutes.get("/", (req, res) => {
 });
 
 subscriptionRoutes.get("/:id", (req, res) => {
-  res.send({ title: "GET Fetch subscription by id" });
+  res.send({ title: "GET Fetch subscription by idid" });
 });
 
 subscriptionRoutes.post("/", authorize, createSuscription);
@@ -22,9 +22,7 @@ subscriptionRoutes.delete("/:id", (req, res) => {
   res.send({ title: "DELETE Delete subscription" });
 });
 
-subscriptionRoutes.get("/user/:id", (req, res) => {
-  res.send({ title: "GET user id  Fetch subscription by id" });
-});
+subscriptionRoutes.get("/user/:id", authorize, getUserSubscriptions);
 
 subscriptionRoutes.put("/:id/cancel", (req, res) => {
   res.send({ title: "PUT  Cancel subscription by id" });

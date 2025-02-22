@@ -4,7 +4,7 @@ interface ISubscription extends Document {
   name: string;
   price: number;
   currency: string;
-  frecuency?: string;
+  frequency?: string;
   category: string;
   paymentMethod: string;
   status?: string;
@@ -13,7 +13,7 @@ interface ISubscription extends Document {
   user: mongoose.Types.ObjectId;
 }
 
-const SubscriptionSchema = new mongoose.Schema<ISubscription>(
+const subscriptionSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -25,63 +25,61 @@ const SubscriptionSchema = new mongoose.Schema<ISubscription>(
     price: {
       type: Number,
       required: [true, "Subscription price is required"],
-      min: [0, "Subscription price must be greater than 0"],
-      max: [1000, "Subscription price must be less than 1000"],
+      min: [0, "Price must be greater than 0"],
     },
     currency: {
       type: String,
-      enum: ["USD", "EUR", "CLP", "GBP"],
+      enum: ["USD", "EUR", "GBP"],
       default: "USD",
     },
-    frecuency: {
+    frequency: {
       type: String,
       enum: ["daily", "weekly", "monthly", "yearly"],
     },
     category: {
       type: String,
-      enum: ["entertaiment", "food", "health", "education", "travel", "anime", "other"],
-      required: [true, "Category is required"],
+      enum: ["sports", "news", "entertainment", "lifestyle", "technology", "finance", "politics", "other"],
+      required: true,
     },
     paymentMethod: {
       type: String,
-      required: [true, "Payment method is required"],
+      required: true,
       trim: true,
     },
     status: {
       type: String,
-      enum: ["active", "cancel", "expired"],
+      enum: ["active", "cancelled", "expired"],
       default: "active",
     },
     startDate: {
       type: Date,
-      required: [true, "Start date is required"],
+      required: true,
       validate: {
         validator: (value: Date) => value <= new Date(),
-        message: "Start date  must be less than current date",
+        message: "Start date must be in the past",
       },
     },
     renewalDate: {
       type: Date,
-      required: [true, "Start date is required"],
       validate: {
         validator: function (this: ISubscription, value: Date) {
           return value > this.startDate;
         },
-        message: "Start date  must be less than current date",
+        message: "Renewal date must be after the start date",
       },
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "User is required"],
+      required: true,
       index: true,
     },
   },
   { timestamps: true }
 );
 
-// Auto-calulate renewal date if missing
-SubscriptionSchema.pre("save", function (next) {
+// Auto-calculate renewal date if missing.
+subscriptionSchema.pre("save", function (next) {
   if (!this.renewalDate) {
     const renewalPeriods = {
       daily: 1,
@@ -89,14 +87,19 @@ SubscriptionSchema.pre("save", function (next) {
       monthly: 30,
       yearly: 365,
     };
+
     this.renewalDate = new Date(this.startDate);
-    this.renewalDate.setDate(
-      this.renewalDate.getDate() + renewalPeriods[this.frecuency as keyof typeof renewalPeriods]
-    );
+    this.renewalDate.setDate(this.renewalDate.getDate() + renewalPeriods[this.frequency || "monthly"]);
   }
+
+  // Auto-update the status if renewal date has passed
+  if (this.renewalDate < new Date()) {
+    this.status = "expired";
+  }
+
   next();
 });
 
-// Auto-update the status if renewal date has passed
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
 
-export default mongoose.model<ISubscription>("Subscription", SubscriptionSchema);
+export default Subscription;
