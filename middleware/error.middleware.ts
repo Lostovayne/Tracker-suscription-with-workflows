@@ -19,7 +19,7 @@ const errorMiddleware = (err: ErrorType, req: Request, res: Response, next: Next
       error.statusCode = 404;
     }
 
-    //Mongoose duplicate key
+    //Mongoose duplicate key  
     if (err.name === "MongoError" && err.code === 11000) {
       const message = "Duplicate resource";
       error = new Error(message);
@@ -28,7 +28,7 @@ const errorMiddleware = (err: ErrorType, req: Request, res: Response, next: Next
 
     //Mongoose validation error
     if (err.name === "ValidationError") {
-      const message = Object.values(err.errors || {}).map(val => val.message);
+      const message = Object.values(err.errors || {}).map((val) => val.message);
       error = new Error(message.join(", "));
       error.statusCode = 400;
     }
@@ -43,3 +43,6 @@ const errorMiddleware = (err: ErrorType, req: Request, res: Response, next: Next
 };
 
 export default errorMiddleware;
+
+
+

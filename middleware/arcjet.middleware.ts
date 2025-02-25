@@ -24,7 +24,6 @@ const arcjetMiddleware = async (req: Request, res: Response, next: NextFunction)
   } catch (error) {
     console.log(`Arcjet Middleware Error : ${error}`);
     next(error);
-    
   }
 };
 
