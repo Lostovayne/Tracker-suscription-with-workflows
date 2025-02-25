@@ -4,11 +4,12 @@ import { PORT } from "./config/env";
 
 // Imports routes for the various resources
 import connectToDatabase from "./database/mongodb";
+import arcjetMiddleware from "./middleware/arcjet.middleware";
 import errorMiddleware from "./middleware/error.middleware";
+import workflowRouter from "./middleware/workflow.routes";
 import authRoutes from "./routes/auth.routes";
 import subscriptionRoutes from "./routes/subscription.routes";
 import userRoutes from "./routes/user.routes";
-import arcjetMiddleware from "./middleware/arcjet.middleware";
 
 const app = express();
 const BASE_API_PATH = "/api/v1";
@@ -16,11 +17,13 @@ const BASE_API_PATH = "/api/v1";
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+//@ts-expect-error TODO: Fix this
 app.use(arcjetMiddleware);
 
 app.use(`${BASE_API_PATH}/subscriptions`, subscriptionRoutes);
 app.use(`${BASE_API_PATH}/users`, userRoutes);
 app.use(`${BASE_API_PATH}/auth`, authRoutes);
+app.use(`${BASE_API_PATH}/workflows`, workflowRouter);
 
 app.use(errorMiddleware);
 
